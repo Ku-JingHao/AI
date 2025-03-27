@@ -1,17 +1,34 @@
 import React, { useState } from 'react';
 import { Box, Container, Grid, Typography, IconButton, Breadcrumbs, Link } from '@mui/material';
-import { ArrowBack as ArrowBackIcon, Home as HomeIcon } from '@mui/icons-material';
+import { ArrowBack as ArrowBackIcon, Home as HomeIcon, Description as DescriptionIcon } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
 import FileUploadArea from '../components/resume/FileUploadArea';
 import SuggestionsPanel from '../components/resume/SuggestionsPanel';
+import { useRecentActivity } from '../contexts/RecentActivityContext';
 
 const ResumeTailoring: React.FC = () => {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jobDescFile, setJobDescFile] = useState<File | null>(null);
+  const { addActivity } = useRecentActivity();
 
   const handleFilesUploaded = (newResumeFile: File | null, newJobDescFile: File | null) => {
     setResumeFile(newResumeFile);
     setJobDescFile(newJobDescFile);
+    
+    // Record this activity when files are uploaded
+    if (newResumeFile && newJobDescFile) {
+      addActivity(
+        'resume',
+        `Resume Uploaded: ${newResumeFile.name} for job description`,
+        <DescriptionIcon color="primary" />
+      );
+    } else if (newResumeFile) {
+      addActivity(
+        'resume',
+        `Resume Uploaded: ${newResumeFile.name}`,
+        <DescriptionIcon color="primary" />
+      );
+    }
   };
 
   return (

@@ -26,9 +26,11 @@ import {
   Person as PersonIcon,
   SupportAgent as SupportAgentIcon,
   Info as InfoIcon,
+  Chat as ChatIcon,
 } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
 import { sendChatMessage, getChatbotFAQTopics } from '../services/resumeService';
+import { useRecentActivity } from '../contexts/RecentActivityContext';
 
 // Interface for chat messages
 interface Message {
@@ -61,6 +63,8 @@ const InterviewChatbot: React.FC = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { addActivity } = useRecentActivity();
+
   // Fetch FAQ topics on component mount
   useEffect(() => {
     const fetchFAQTopics = async () => {
@@ -92,21 +96,28 @@ const InterviewChatbot: React.FC = () => {
   const handleSendMessage = async (text: string = inputValue) => {
     if (!text.trim()) return;
 
-    // Add user message to the UI immediately
     const userMessage: Message = {
-      id: messages.length + 1,
-      text,
+      id: Date.now(),
+      text: text,
       sender: 'user',
       timestamp: new Date(),
     };
 
+    // Add to messages
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
     setIsLoading(true);
 
     try {
-      // Send message to the backend API
+      // Record this activity in recent activities
+      addActivity(
+        'chatbot', 
+        `Chatbot: Asked about "${text.substring(0, 30)}${text.length > 30 ? '...' : ''}"`,
+        <ChatIcon color="primary" />
+      );
+
+      // Send to backend and get response
       const response = await sendChatMessage(text, sessionId);
       
       // Update session ID if returned from backend
@@ -142,6 +153,7 @@ const InterviewChatbot: React.FC = () => {
   };
 
   const handleFAQClick = (question: string) => {
+    setInputValue(question);
     handleSendMessage(question);
   };
 

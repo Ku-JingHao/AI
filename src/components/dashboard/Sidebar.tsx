@@ -42,19 +42,6 @@ const menuItems = [
   },
 ];
 
-const bottomMenuItems = [
-  {
-    text: 'Settings',
-    icon: <SettingsIcon />,
-    path: '/settings',
-  },
-  {
-    text: 'Help & Support',
-    icon: <HelpIcon />,
-    path: '/help',
-  },
-];
-
 const Sidebar: React.FC = () => {
   const location = useLocation();
 
@@ -74,40 +61,6 @@ const Sidebar: React.FC = () => {
       <Box>
         <List component="nav" aria-label="main mailbox folders">
           {menuItems.map((item) => (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                component={RouterLink}
-                to={item.path}
-                selected={location.pathname === item.path}
-                sx={{
-                  py: 1.5,
-                  '&.Mui-selected': {
-                    backgroundColor: 'rgba(33, 150, 243, 0.1)',
-                    color: 'primary.main',
-                    '&:hover': {
-                      backgroundColor: 'rgba(33, 150, 243, 0.2)',
-                    },
-                    '& .MuiListItemIcon-root': {
-                      color: 'primary.main',
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText 
-                  primary={
-                    <Typography variant="body1" sx={{ fontSize: '20px'}}>
-                      {item.text}
-                    </Typography>
-                  }
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider sx={{ my: 2 }} />
-        <List component="nav" aria-label="secondary mailbox folders">
-          {bottomMenuItems.map((item) => (
             <ListItem key={item.text} disablePadding>
               <ListItemButton
                 component={RouterLink}

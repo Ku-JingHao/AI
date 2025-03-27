@@ -1,23 +1,10 @@
-import React, { useState } from 'react';
-import { Box, Container, Grid, Typography, IconButton, Breadcrumbs, Link } from '@mui/material';
+import React from 'react';
+import { Box, Container, Typography, IconButton, Breadcrumbs, Link } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, Home as HomeIcon } from '@mui/icons-material';
 import { Link as RouterLink } from 'react-router-dom';
-import InterviewPanel from '../components/interview/InterviewPanel';
-import FeedbackPanel from '../components/interview/FeedbackPanel';
+import MockInterviewPage from '../components/interview/MockInterviewPage';
 
 const MockInterview: React.FC = () => {
-  const [transcription, setTranscription] = useState('');
-  const [isInterviewActive, setIsInterviewActive] = useState(false);
-
-  const handleTranscriptionUpdate = (text: string) => {
-    setTranscription(text);
-    setIsInterviewActive(true);
-  };
-
-  const handleInterviewEnd = () => {
-    setIsInterviewActive(false);
-  };
-
   return (
     <Box sx={{ flexGrow: 1, py: 4, px: { xs: 2, md: 4 } }}>
       <Container maxWidth="xl">
@@ -61,17 +48,7 @@ const MockInterview: React.FC = () => {
           </Box>
         </Box>
 
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
-            <InterviewPanel onTranscriptionUpdate={handleTranscriptionUpdate} />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <FeedbackPanel 
-              transcription={transcription} 
-              isInterviewActive={isInterviewActive} 
-            />
-          </Grid>
-        </Grid>
+        <MockInterviewPage />
       </Container>
     </Box>
   );

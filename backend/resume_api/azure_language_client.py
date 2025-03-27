@@ -304,11 +304,11 @@ def _calculate_partial_match_score(text1, text2):
     
     # Calculate Levenshtein (edit) distance
     try:
-        import Levenshtein
+        import Levenshtein as lev
         max_len = max(len(s1), len(s2))
         if max_len == 0:
             return 0
-        edit_distance = Levenshtein.distance(s1, s2)
+        edit_distance = lev.distance(s1, s2)
         return 1.0 - (edit_distance / max_len)
     except ImportError:
         # Fallback if Levenshtein library is not available

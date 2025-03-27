@@ -21,13 +21,13 @@ const Header: React.FC = () => {
           AI Resume Assistant
         </Typography>
         <Box sx={{ display: 'flex', gap: 2}}>
-          <Button color="inherit" component={RouterLink} to="/resume" sx={{ fontSize: '20px', fontFamily: 'Times New Roman, serif' }}>
+          <Button color="inherit" component={RouterLink} to="/login" sx={{ fontSize: '20px', fontFamily: 'Times New Roman, serif' }}>
             Resume Tailoring
           </Button>
-          <Button color="inherit" component={RouterLink} to="/interview" sx={{ fontSize: '20px', fontFamily: 'Times New Roman, serif' }}>
+          <Button color="inherit" component={RouterLink} to="/login" sx={{ fontSize: '20px', fontFamily: 'Times New Roman, serif' }}>
             Mock Interviews
           </Button>
-          <Button color="inherit" component={RouterLink} to="/chat" sx={{ fontSize: '20px', fontFamily: 'Times New Roman, serif' }}>
+          <Button color="inherit" component={RouterLink} to="/login" sx={{ fontSize: '20px', fontFamily: 'Times New Roman, serif' }}>
             Chatbot
           </Button>
           <Button variant="contained" color="primary" component={RouterLink} to="/login" sx={{ fontSize: '20px', fontFamily: 'Times New Roman, serif' }}>

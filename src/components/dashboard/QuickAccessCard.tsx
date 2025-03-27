@@ -8,6 +8,7 @@ import {
   SvgIconProps
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { useRecentActivity } from '../../contexts/RecentActivityContext';
 
 interface QuickAccessCardProps {
   title: string;
@@ -15,6 +16,8 @@ interface QuickAccessCardProps {
   icon: ReactNode;
   buttonText: string;
   linkTo: string;
+  activityType: 'resume' | 'interview' | 'chatbot' | 'application';
+  activityDescription?: string;
 }
 
 const QuickAccessCard: React.FC<QuickAccessCardProps> = ({
@@ -23,7 +26,18 @@ const QuickAccessCard: React.FC<QuickAccessCardProps> = ({
   icon,
   buttonText,
   linkTo,
+  activityType,
+  activityDescription,
 }) => {
+  const { addActivity } = useRecentActivity();
+
+  const handleButtonClick = () => {
+    // Create a description if not provided
+    const description = activityDescription || `${title} started`;
+    // Add this action to recent activities
+    addActivity(activityType, description, icon);
+  };
+
   return (
     <Card
       sx={{
@@ -54,6 +68,7 @@ const QuickAccessCard: React.FC<QuickAccessCardProps> = ({
           color="primary"
           fullWidth
           sx={{ mt: 'auto', fontSize: '20px'}}
+          onClick={handleButtonClick}
         >
           {buttonText}
         </Button>

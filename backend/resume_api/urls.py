@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register(r'resumes', views.ResumeViewSet, basename='resume')
 router.register(r'job-descriptions', views.JobDescriptionViewSet, basename='jobdescription')
 router.register(r'analyses', views.ResumeAnalysisViewSet, basename='resumeanalysis')
+router.register(r'mock-interviews', views.MockInterviewViewSet, basename='mockinterview')
 
 # The API URLs are determined automatically by the router
 urlpatterns = [
@@ -14,6 +15,10 @@ urlpatterns = [
     path('analyze/', views.analyze_resume, name='analyze-resume'),
     path('test-sentiment/', views.test_sentiment_analysis, name='test_sentiment_analysis'),
     
+    #Mock Interview
+    path('analyze-interview/', views.analyze_interview, name='analyze-interview'),
+    path('interview-feedback/<int:interview_id>/', views.get_interview_feedback, name='interview-feedback'),
+
     # Interview preparation chatbot URLs
     path('interview/chat/', views.interview_chat, name='interview-chat'),
     path('interview/history/', views.get_chat_history, name='chat-history'),

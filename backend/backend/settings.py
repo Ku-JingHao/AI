@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     
     # Project apps
     'resume_api',
+    'interviews',
 ]
 
 MIDDLEWARE = [

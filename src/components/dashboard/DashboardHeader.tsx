@@ -60,14 +60,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onToggleSidebar }) =>
         <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Tooltip title="Notifications">
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-          </Tooltip>
-
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar alt="John Doe" src="/images/avatar.svg" />
@@ -91,9 +83,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onToggleSidebar }) =>
           >
             <MenuItem component={RouterLink} to="/profile" onClick={handleCloseUserMenu}>
               Profile
-            </MenuItem>
-            <MenuItem component={RouterLink} to="/settings" onClick={handleCloseUserMenu}>
-              Settings
             </MenuItem>
             <MenuItem component={RouterLink} to="/login" onClick={handleCloseUserMenu}>
               Logout

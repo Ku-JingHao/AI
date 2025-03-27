@@ -45,6 +45,30 @@ class ResumeAnalysis(models.Model):
     def __str__(self):
         return f"Analysis for {self.resume.title} - {self.job_description.title}"
 
+class MockInterview(models.Model):
+    """Model to store mock interview data and analysis results"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="mock_interviews")
+    job_description = models.ForeignKey(JobDescription, on_delete=models.CASCADE, 
+                                        related_name="mock_interviews", null=True, blank=True)
+    title = models.CharField(max_length=100)
+    transcript = models.TextField()
+    audio_file_path = models.CharField(max_length=255, blank=True, null=True)  # Path to stored audio file
+    duration = models.FloatField(default=0.0)  # Duration in seconds
+    
+    # Analysis results stored as JSON
+    audio_analysis = models.JSONField(default=dict)
+    content_analysis = models.JSONField(default=dict)
+    feedback = models.JSONField(default=dict)
+    overall_score = models.IntegerField(default=0)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = "Mock Interviews"
+    
+    def __str__(self):
+        return f"Mock Interview: {self.title} - {self.user.username}"
+    
 class ChatMessage(models.Model):
     """Model to store chat messages for the interview preparation chatbot"""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="chat_messages")

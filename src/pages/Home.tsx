@@ -3,7 +3,6 @@ import { Box } from '@mui/material';
 import Header from '../components/layout/Header';
 import HeroSection from '../components/home/HeroSection';
 import FeaturesSection from '../components/home/FeaturesSection';
-import TestimonialsSection from '../components/home/TestimonialsSection';
 import CtaSection from '../components/home/CtaSection';
 import Footer from '../components/layout/Footer';
 
@@ -14,7 +13,6 @@ const Home: React.FC = () => {
       <Box component="main" sx={{ flexGrow: 1 }}>
         <HeroSection />
         <FeaturesSection />
-        <TestimonialsSection />
         <CtaSection />
       </Box>
       <Footer />

@@ -16,8 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from rest_framework import routers
+from interviews.views import bert_analysis, InterviewAnalysisViewSet
+
+# Create a router for REST API
+router = routers.DefaultRouter()
+router.register(r'interview-analyses', InterviewAnalysisViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/resume/', include('resume_api.urls')),
+    # New interview analysis API endpoints
+    path('api/', include(router.urls)),
+    path('api/interview/bert-analysis/', bert_analysis, name='bert-analysis'),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

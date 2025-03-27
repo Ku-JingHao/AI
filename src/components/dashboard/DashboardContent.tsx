@@ -13,6 +13,8 @@ const quickAccessItems = [
     icon: <DescriptionIcon sx={{ fontSize: 40 }} />,
     buttonText: 'Get Started',
     linkTo: '/resume',
+    activityType: 'resume' as const,
+    activityDescription: 'Started Resume Tailoring',
   },
   {
     title: 'Mock Interviews',
@@ -20,6 +22,8 @@ const quickAccessItems = [
     icon: <MicIcon sx={{ fontSize: 40 }} />,
     buttonText: 'Start Interview',
     linkTo: '/mock-interview',
+    activityType: 'interview' as const,
+    activityDescription: 'Started Mock Interview',
   },
   {
     title: 'Interview Chatbot',
@@ -27,6 +31,8 @@ const quickAccessItems = [
     icon: <ChatIcon sx={{ fontSize: 40 }} />,
     buttonText: 'Chat Now',
     linkTo: '/chat',
+    activityType: 'chatbot' as const,
+    activityDescription: 'Started Chatbot Session',
   },
 ];
 
@@ -50,6 +56,8 @@ const DashboardContent: React.FC = () => {
                 icon={item.icon}
                 buttonText={item.buttonText}
                 linkTo={item.linkTo}
+                activityType={item.activityType}
+                activityDescription={item.activityDescription}
               />
             </Grid>
           ))}

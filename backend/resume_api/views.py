@@ -6,16 +6,26 @@ from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.conf import settings
 from django.contrib.auth.models import User
+import os
+import json
+import tempfile
+import uuid
 
-from .models import Resume, JobDescription, ResumeAnalysis, ChatMessage
+from .models import Resume, JobDescription, ResumeAnalysis, ChatMessage, MockInterview
 from .serializers import (
     ResumeSerializer, 
     JobDescriptionSerializer, 
     ResumeAnalysisSerializer,
     ResumeAnalysisResultSerializer,
+    MockInterviewSerializer,
+    InterviewAnalysisResultSerializer,
+    InterviewFeedbackSerializer,
     ChatMessageSerializer
 )
 from .resume_analyzer import ResumeAnalyzer
+from .interview_analyzer import InterviewAnalyzer
+from . import azure_language_client
+from . import azure_speech_client
 from . import azure_language_client
 from .groq_client import InterviewChatbot
 import json
@@ -23,6 +33,7 @@ import json
 # Initialize the resume analyzer and interview chatbot
 resume_analyzer = ResumeAnalyzer()
 interview_chatbot = InterviewChatbot()
+interview_analyzer = InterviewAnalyzer()
 
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])
@@ -80,6 +91,95 @@ def test_sentiment_analysis(request):
     # Return the full result
     return Response(result, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def analyze_interview(request):
+    """
+    Analyze a mock interview recording and provide feedback.
+    """
+    audio_file = request.FILES.get('audio_file')
+    job_description_id = request.data.get('job_description_id')
+    interview_title = request.data.get('title', 'Mock Interview')
+    
+    if not audio_file:
+        return Response({
+            'error': 'Audio file is required.'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Get job description text if provided
+    job_description_text = ""
+    job_description = None
+    
+    if job_description_id:
+        try:
+            job_description = JobDescription.objects.get(id=job_description_id)
+            job_description_text = job_description.content
+        except JobDescription.DoesNotExist:
+            return Response({
+                'error': 'Job description not found.'
+            }, status=status.HTTP_404_NOT_FOUND)
+    
+    # Read audio data from file
+    audio_data = audio_file.read()
+    
+    # Save audio file for later reference
+    audio_file_path = None
+    if audio_data:
+        # Create a unique filename
+        filename = f"interview_{uuid.uuid4().hex}.wav"
+        audio_dir = os.path.join(settings.MEDIA_ROOT, 'interviews')
+        
+        # Create directory if it doesn't exist
+        os.makedirs(audio_dir, exist_ok=True)
+        
+        # Save audio file
+        audio_file_path = os.path.join(audio_dir, filename)
+        with open(audio_file_path, 'wb') as f:
+            f.write(audio_data)
+    
+    # Analyze the interview
+    analysis_result = interview_analyzer.analyze_interview(audio_data, job_description_text)
+    
+    if "error" in analysis_result:
+        return Response({
+            'error': analysis_result["error"]
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Create or update the MockInterview model instance
+    mock_interview = MockInterview(
+        user=request.user,
+        job_description=job_description,
+        title=interview_title,
+        transcript=analysis_result.get("transcript", ""),
+        audio_file_path=audio_file_path,
+        duration=analysis_result.get("audio_analysis", {}).get("duration", 0),
+        audio_analysis=analysis_result.get("audio_analysis", {}),
+        content_analysis=analysis_result.get("content_analysis", {}),
+        feedback=analysis_result.get("feedback", {}),
+        overall_score=analysis_result.get("feedback", {}).get("overall_score", {}).get("score", 0)
+    )
+    mock_interview.save()
+    
+    # Return the analysis result
+    serializer = InterviewAnalysisResultSerializer(analysis_result)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_interview_feedback(request, interview_id):
+    """
+    Get detailed feedback for a specific mock interview.
+    """
+    try:
+        interview = MockInterview.objects.get(id=interview_id, user=request.user)
+        feedback = interview.feedback
+        
+        serializer = InterviewFeedbackSerializer(feedback)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except MockInterview.DoesNotExist:
+        return Response({
+            'error': 'Mock interview not found.'
+        }, status=status.HTTP_404_NOT_FOUND)
+    
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def interview_chat(request):
@@ -257,3 +357,18 @@ class ResumeAnalysisViewSet(viewsets.ReadOnlyModelViewSet):
         if user.is_authenticated:
             return ResumeAnalysis.objects.filter(user=user).order_by('-created_at')
         return ResumeAnalysis.objects.none()
+
+class MockInterviewViewSet(viewsets.ModelViewSet):
+    """ViewSet for viewing and managing MockInterview instances"""
+    serializer_class = MockInterviewSerializer
+    
+    def get_queryset(self):
+        """Return mock interviews for the current authenticated user only"""
+        user = self.request.user
+        if user.is_authenticated:
+            return MockInterview.objects.filter(user=user).order_by('-created_at')
+        return MockInterview.objects.none()
+    
+    def perform_create(self, serializer):
+        """Set the user when creating a new mock interview"""
+        serializer.save(user=self.request.user)
