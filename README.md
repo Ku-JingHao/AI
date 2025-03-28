@@ -93,13 +93,17 @@ npm install
 cd AI-Powered-Job-Application-Assistant-main
 npm start
 ```
-
+```
+http://localhost:3000/
+```
 ### Backend Setup
 ```bash
 # Navigate to the backend directory and run the backend
 cd AI-Powered-Job-Application-Assistant-main/backend
 python manage.py runserver
-
+```
+http://127.0.0.1:8000/
+```
 # Create and activate a virtual environment (recommended)
 python -m venv venv
 # On Windows
