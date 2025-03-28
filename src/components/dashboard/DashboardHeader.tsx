@@ -11,9 +11,10 @@ import {
   Tooltip,
   Badge,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { useAuth } from '../../context/AuthContext';
 
 interface DashboardHeaderProps {
   onToggleSidebar?: () => void;
@@ -21,6 +22,38 @@ interface DashboardHeaderProps {
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onToggleSidebar }) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // Get user initials or first letter of username
+  const getUserInitials = () => {
+    if (!user) return '?';
+    
+    if (user.first_name && user.last_name) {
+      return `${user.first_name[0]}${user.last_name[0]}`;
+    } else if (user.first_name) {
+      return user.first_name[0];
+    } else if (user.username) {
+      return user.username[0].toUpperCase();
+    }
+    
+    return '?';
+  };
+
+  // Get user's full name or username
+  const getUserDisplayName = () => {
+    if (!user) return 'User';
+    
+    if (user.first_name && user.last_name) {
+      return `${user.first_name} ${user.last_name}`;
+    } else if (user.first_name) {
+      return user.first_name;
+    } else if (user.username) {
+      return user.username;
+    }
+    
+    return 'User';
+  };
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -28,6 +61,12 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onToggleSidebar }) =>
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleCloseUserMenu();
+    navigate('/login');
   };
 
   return (
@@ -60,9 +99,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onToggleSidebar }) =>
         <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Tooltip title="Open settings">
+          <Tooltip title={getUserDisplayName()}>
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="John Doe" src="/images/avatar.svg" />
+              <Avatar alt={getUserDisplayName()} src="/images/avatar.svg" sx={{ bgcolor: 'primary.main' }}>
+                {getUserInitials()}
+              </Avatar>
             </IconButton>
           </Tooltip>
           <Menu
@@ -84,7 +125,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onToggleSidebar }) =>
             <MenuItem component={RouterLink} to="/profile" onClick={handleCloseUserMenu}>
               Profile
             </MenuItem>
-            <MenuItem component={RouterLink} to="/login" onClick={handleCloseUserMenu}>
+            <MenuItem onClick={handleLogout}>
               Logout
             </MenuItem>
           </Menu>
