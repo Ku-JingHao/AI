@@ -43,9 +43,6 @@ const DashboardContent: React.FC = () => {
         <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" sx={{fontSize:'35px'}}>
           Dashboard
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" paragraph sx={{fontSize:'25px'}}>
-          Welcome back, John!
-        </Typography>
 
         <Grid container spacing={4} sx={{ mt: 2 }}>
           {quickAccessItems.map((item, index) => (
