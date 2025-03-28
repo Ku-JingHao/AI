@@ -93,6 +93,7 @@ npm install
 cd AI-Powered-Job-Application-Assistant-main
 npm start
 ```
+Starting frontend development server at
 ```
 http://localhost:3000/
 ```
@@ -101,6 +102,8 @@ http://localhost:3000/
 # Navigate to the backend directory and run the backend
 cd AI-Powered-Job-Application-Assistant-main/backend
 python manage.py runserver
+```
+Starting backend development server at
 ```
 http://127.0.0.1:8000/
 ```
