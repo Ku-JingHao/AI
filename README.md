@@ -1,6 +1,6 @@
 # AI-Powered Job Application Assistant
 
-An innovative web application that leverages artificial intelligence to streamline and enhance the job application process for job seekers.
+An innovative full-stack web application that leverages artificial intelligence to streamline and enhance the job application process for job seekers.
 
 ## Introduction
 
@@ -92,6 +92,11 @@ npm install
 # Start the development server
 cd AI-Powered-Job-Application-Assistant-main
 npm start
+
+```
+Starting frontend development server at
+```
+http://localhost:3000/
 ```
 
 ### Backend Setup
@@ -118,6 +123,11 @@ python manage.py migrate
 
 # Start the development server
 python manage.py runserver
+```
+
+Starting backend development server at
+```
+http://127.0.0.1:8000/
 ```
 
 ## Environment Variables
