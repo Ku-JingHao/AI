@@ -1,6 +1,6 @@
 # AI-Powered Job Application Assistant
 
-An innovative web application that leverages artificial intelligence to streamline and enhance the job application process for job seekers.
+An innovative full-stack web application that leverages artificial intelligence to streamline and enhance the job application process for job seekers.
 
 ## Introduction
 
