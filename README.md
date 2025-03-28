@@ -92,21 +92,19 @@ npm install
 # Start the development server
 cd AI-Powered-Job-Application-Assistant-main
 npm start
+
 ```
 Starting frontend development server at
 ```
 http://localhost:3000/
 ```
+
 ### Backend Setup
 ```bash
 # Navigate to the backend directory and run the backend
 cd AI-Powered-Job-Application-Assistant-main/backend
 python manage.py runserver
-```
-Starting backend development server at
-```
-http://127.0.0.1:8000/
-```
+
 # Create and activate a virtual environment (recommended)
 python -m venv venv
 # On Windows
@@ -125,6 +123,11 @@ python manage.py migrate
 
 # Start the development server
 python manage.py runserver
+```
+
+Starting backend development server at
+```
+http://127.0.0.1:8000/
 ```
 
 ## Environment Variables
